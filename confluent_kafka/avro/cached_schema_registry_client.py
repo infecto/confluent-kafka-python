@@ -19,7 +19,6 @@
 #
 # derived from https://github.com/verisign/python-confluent-schemaregistry.git
 #
-import json
 import logging
 import warnings
 from collections import defaultdict
@@ -214,7 +213,7 @@ class CachedSchemaRegistryClient(object):
         url = '/'.join([self.url, 'subjects', subject, 'versions'])
         # body is { schema : json_string }
 
-        body = {'schema': json.dumps(avro_schema.to_json())}
+        body = {'schema': avro_schema.__str__()}
         result, code = self._send_request(url, method='POST', body=body)
         if (code == 401 or code == 403):
             raise ClientError("Unauthorized access. Error code:" + str(code))
@@ -337,7 +336,7 @@ class CachedSchemaRegistryClient(object):
             return version
 
         url = '/'.join([self.url, 'subjects', subject])
-        body = {'schema': json.dumps(avro_schema.to_json())}
+        body = {'schema': avro_schema.__str__()}
 
         result, code = self._send_request(url, method='POST', body=body)
         if code == 404:
@@ -365,7 +364,7 @@ class CachedSchemaRegistryClient(object):
         """
         url = '/'.join([self.url, 'compatibility', 'subjects', subject,
                         'versions', str(version)])
-        body = {'schema': json.dumps(avro_schema.to_json())}
+        body = {'schema': avro_schema.__str__()}
         try:
             result, code = self._send_request(url, method='POST', body=body)
             if code == 404:
